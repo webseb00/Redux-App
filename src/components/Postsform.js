@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import { newPostRequest } from '../reducers/rootReducer';
 
 class PostForm extends Component {
     constructor(props) {
@@ -17,21 +20,13 @@ class PostForm extends Component {
 
     onSubmit(e) {
         e.preventDefault();
-        console.log('asdsdf');
+        const { newPostRequest } = this.props;
         const post = {
             title: this.state.title,
             body: this.state.body
         };
 
-        fetch(`https://jsonplaceholder.typicode.com/posts`, {
-            method: 'POST',
-            headers: {
-                'content-type': 'application/json'
-            },
-            body: JSON.stringify(post)
-        })
-            .then(res => res.json())
-            .then(data => console.log(data));
+        newPostRequest(post);
 
         this.setState({
             title: '',
@@ -62,4 +57,12 @@ class PostForm extends Component {
 
 };
 
-export default PostForm;
+const mapDispatchToProps = dispatch => ({
+    newPostRequest: (post) => dispatch(newPostRequest(post))
+});
+
+export default connect(null, mapDispatchToProps)(PostForm);
+
+PostForm.propTypes = {
+    newPostRequest: PropTypes.func.isRequired
+};
